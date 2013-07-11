@@ -83,12 +83,18 @@ if(require.main == module) {
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
         .option('-u, --url <url>', 'Path to web', URL_DEFAULT)
         .parse(process.argv);
-    
-    //var checkJson = checkHtmlFile(program.file, program.checks);
-    var writeToFile = checkUrl("tmp.html", program.checks);
-    rest.get(program.url).on('complete', writeToFile);
-    //var outJson = JSON.stringify(checkJson, null, 4);
-    //console.log(outJson);
-} else {
-    exports.checkHtmlFile = checkHtmlFile;
+
+    if (program.url!=URL_DEFAULT && program.file!=HTMLFILE_DEFAULT){ 
+	var writeToFile = checkUrl(program_url, program.checks);
+	rest.get(program.url).on('complete', writeToFile);
+    }else if (program.url!=URL_DEFAULT && program.file==HTMLFILE_DEFAULT){ 
+	var writeToFile = checkUrl("tmp.html", program.checks);
+	rest.get(program.url).on('complete', writeToFile);  
+   }else {
+	var checkJson = checkHtmlFile(program.file, program.checks);
+	var outJson = JSON.stringify(checkJson, null, 4);
+	console.log(outJson);	
+    }
 }
+    //exports.checkHtmlFile = checkHtmlFile;
+//}
